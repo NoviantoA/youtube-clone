@@ -1,2 +1,6 @@
-package com.noviantoanggoro.youtubeclone.model;public class VideoStatus {
+package com.noviantoanggoro.youtubeclone.model;
+
+public enum VideoStatus {
+
+    PUBLIC, PRIVATE, UNLISTED
 }
