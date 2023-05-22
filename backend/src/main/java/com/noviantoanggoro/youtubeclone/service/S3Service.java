@@ -17,8 +17,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3Service implements FileService{
 
-    public static final String BUCKET_NAME = "youtube-clone";
-    private final AmazonS3Client awsS3Client;
+//    public static final String BUCKET_NAME = "youtube-clone";
+//    private final AmazonS3Client awsS3Client;
 
 //    public S3Service(AmazonS3Client awsS3Client) {
 //        this.awsS3Client = awsS3Client;
@@ -31,19 +31,20 @@ public class S3Service implements FileService{
         // Prepare Key
         var filenameExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
 
-        var key = UUID.randomUUID().toString() + filenameExtension;
+        var key = UUID.randomUUID().toString() + "." + filenameExtension;
 
         var metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
         metadata.setContentType(file.getContentType());
 
-        try {
-            awsS3Client.putObject(BUCKET_NAME, key, file.getInputStream(), metadata);
-        } catch (IOException e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Terdapat kesalahan saat upload file");
-        }
-
-        awsS3Client.setObjectAcl(BUCKET_NAME, key, CannedAccessControlList.PublicRead);
-        return awsS3Client.getResourceUrl(BUCKET_NAME, key);
+//        try {
+//            awsS3Client.putObject(BUCKET_NAME, key, file.getInputStream(), metadata);
+//        } catch (IOException e){
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Terdapat kesalahan saat upload file");
+//        }
+//
+//        awsS3Client.setObjectAcl(BUCKET_NAME, key, CannedAccessControlList.PublicRead);
+//        return awsS3Client.getResourceUrl(BUCKET_NAME, key);
+        return key;
     }
 }
