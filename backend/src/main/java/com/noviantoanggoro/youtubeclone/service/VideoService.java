@@ -1,5 +1,6 @@
 package com.noviantoanggoro.youtubeclone.service;
 
+import com.noviantoanggoro.youtubeclone.dto.VideoDto;
 import com.noviantoanggoro.youtubeclone.model.Video;
 import com.noviantoanggoro.youtubeclone.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,33 @@ public class VideoService {
         video.setVideoUrl(videoUrl);
 
         videoRepository.save(video);
+    }
+
+    public VideoDto editVideo(VideoDto videoDto) {
+        // find video by videoId
+        var saveVideo = getVideoById(videoDto.getId());
+        // map videoDTO field ke video
+        saveVideo.setTitle(videoDto.getTitle());
+        saveVideo.setDescription(videoDto.getDescription());
+        saveVideo.setTags(videoDto.getTags());
+        saveVideo.setThumbnailUrl(videoDto.getThumbnailUrl());
+        saveVideo.setVideoStatus(videoDto.getVideoStatus());
+        // save video ke database
+        videoRepository.save(saveVideo);
+        return videoDto;
+    }
+
+    public String uploadThumbnail(MultipartFile file, String videoId) {
+        var saveVideo = getVideoById(videoId);
+        String thumbnailUrl = s3Service.uploadFile(file);
+        saveVideo.setVideoUrl(thumbnailUrl);
+
+        videoRepository.save(saveVideo);
+        return thumbnailUrl;
+    }
+
+    Video getVideoById(String videoId){
+        return videoRepository.findById(videoId)
+                .orElseThrow(() -> new IllegalArgumentException("Tidak dapat menemukan video by id " + videoId));
     }
 }
