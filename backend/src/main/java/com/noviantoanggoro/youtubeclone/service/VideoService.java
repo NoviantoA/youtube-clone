@@ -1,5 +1,6 @@
 package com.noviantoanggoro.youtubeclone.service;
 
+import com.noviantoanggoro.youtubeclone.dto.UploadVideoResponse;
 import com.noviantoanggoro.youtubeclone.dto.VideoDto;
 import com.noviantoanggoro.youtubeclone.model.Video;
 import com.noviantoanggoro.youtubeclone.repository.VideoRepository;
@@ -14,14 +15,15 @@ public class VideoService {
     private final S3Service s3Service;
     private final VideoRepository videoRepository;
 
-    public void uploadVideo(MultipartFile multipartFile){
+    public UploadVideoResponse uploadVideo(MultipartFile multipartFile){
         // upload file ke AWS S3
         // save video data ke database
         String videoUrl = s3Service.uploadFile(multipartFile);
         var video = new Video();
         video.setVideoUrl(videoUrl);
 
-        videoRepository.save(video);
+        var saveVideo = videoRepository.save(video);
+        return new UploadVideoResponse(saveVideo.getId(), saveVideo.getVideoUrl());
     }
 
     public VideoDto editVideo(VideoDto videoDto) {
